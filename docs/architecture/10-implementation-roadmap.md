@@ -2,7 +2,7 @@
 
 **Status:** Proposed engineering plan. **Not** implementation authorization.  
 **Date:** 2026-10-12  
-**Authority:** Documents 00–08 remain frozen. Document 09 operationalizes them. This file does not amend, supersede, or implement any of them.
+**Authority:** Documents 00–04 and 06–08 remain frozen. Document 05 has one approved amendment, `METHOD_NOT_ALLOWED` at HTTP 405 (decision register §10.2). Document 09 operationalizes the contracts. This file does not amend, supersede, or implement any of them. Phase 2 remains separately unauthorized.
 
 If this roadmap and a frozen design disagree, **`00-frozen-decisions.md` wins**, except **permission identifiers**, which **Document 07** owns.
 
@@ -29,7 +29,7 @@ The product is a **greenfield** retail-only modular monolith. Do not reuse, copy
 
 ## B. Current architecture baseline
 
-### B.1 Actual repository state (verified 2026-10-12)
+### B.1 Actual repository state (corrected 2026-10-12)
 
 Present:
 
@@ -49,13 +49,16 @@ Present:
 | [../AGENTS.md](../../AGENTS.md) and `.cursor/rules/` | Agent / IDE rules |
 | Proposals under [proposals/](./proposals/) (see B.4) | Non-frozen |
 | [2026-10-11-platform-and-role-template-amendments.md](./2026-10-11-platform-and-role-template-amendments.md) | Draft amendment proposal (not under `proposals/`) |
-| [ameen-retail-consolidated-decision-amendment-register.md](./ameen-retail-consolidated-decision-amendment-register.md) | Decision/amendment register (draft) |
+| [ameen-retail-consolidated-decision-amendment-register.md](./ameen-retail-consolidated-decision-amendment-register.md) | Decision register. Choice (b) and the Document 05 amendment are recorded in §10. Gate 1 proposals are not applied to Documents 00 or 07 |
+| `backend/` | Phase 1 API foundation: health, Document 05 error envelope, tenant isolation. No identity, role seeds, or sales workflow |
+| `backend/openapi.yaml` | OpenAPI catalogue, including `METHOD_NOT_ALLOWED` |
+| `backend/tests/` | Foundation tests |
+| `docker-compose.yml` | Local Postgres and API |
+| Git repository | This tree is tracked on `main` |
 
 Absent (do not invent replacements):
 
-- `backend/`, `frontend/`, `infrastructure/`, `docker-compose.yml`, application tests
-- Git repository
-- OpenAPI (`openapi.yaml`)
+- `frontend/`, `infrastructure/`
 - Requirement → API → permission → test traceability matrix (README lists this as not yet in the pack)
 - Screen layouts / UX wireframes (tokens only in 08)
 - `docs/architecture/proposals/2026-10-11-platform-and-role-template-amendments.md` — **header path is wrong**; the file lives one directory up

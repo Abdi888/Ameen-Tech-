@@ -1,19 +1,19 @@
 # Ameen Retail ERP — Consolidated Decision and Amendment Register
 
-**Status:** Draft for review — Gate 1 resolutions **recorded**, not applied  
+**Status:** Choice (b) recorded 2026-10-12. Gate 1 resolutions remain recorded proposals and are not applied to Documents 00 or 07.  
 **Date:** 2026-10-12  
 **Scope:** Greenfield Ameen Retail ERP architecture amendment  
-**Implementation status:** Not authorized  
-**Frozen-document status:** Documents 00–08 remain unchanged and frozen  
-**Document 09:** Unchanged. `roles.view` / Appendix B item 6 change applies only after Documents 05 and 07 are amended together under explicit authorization.
+**Implementation status:** Foundation corrections only. Identity implementation is not authorized.  
+**Frozen-document status:** Documents 00–04 and 06–08 remain unchanged and frozen. Document 05 has one approved amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2).  
+**Document 09:** Code list includes `METHOD_NOT_ALLOWED`. Appendix B item 6 remains the implementer rule until Documents 05 and 07 are amended together for role listing. `roles.view` stays inactive.
 
-**Source of recorded Gate 1 text:** user record 2026-10-12; proposal `docs/architecture/proposals/2026-10-12-gate-1-amendment-set.md`. These resolutions are **pending explicit approval and authorization to amend** the architecture documents. They do not supersede Documents 00–08.
+**Source of recorded Gate 1 text:** user record 2026-10-12; proposal `docs/architecture/proposals/2026-10-12-gate-1-amendment-set.md`. Those resolutions do not supersede Documents 00–04, 06–08, or Document 07. Choice (b) defers U-01–U-06 (§10.1). The Document 05 amendment in §10.2 is a separate approved correction.
 
 ## 1. Purpose and boundaries
 
 This register consolidates the user's six selections, remaining decisions identified in the Cursor review, proposed document impacts, and approval gates.
 
-This is a review artifact only. It does not amend or supersede any frozen architecture document and does not authorize coding, migrations, frontend/UI work, infrastructure work, or implementation.
+This is a review artifact. It does not amend Documents 00–04 or 06–08. The owner decisions it records are roadmap choice (b) and the Document 05 amendment in §10. The only implementation authorization recorded here is the foundation correction in §10. Identity implementation is not authorized.
 
 The project is greenfield and must not reuse code from the legacy ERP.
 
@@ -174,21 +174,23 @@ Architecture approval does not authorize implementation. A separate user approva
 
 Use this checklist at the next review. Partial approval is acceptable; any deferred item must be recorded explicitly.
 
-- [x] Record the eight-template catalogue and Sales Manager disposition (Salesperson replaces Sales Manager; nine-name alternative not selected). **Not yet authorized as a frozen-document edit.**
-- [x] Record the five default tenant-owned copies and no-silent-overwrite rule. **Not yet applied to Documents 00/07.**
-- [x] Record Owner POS off, platform vs tenant Administrator, `roles.view` / deferred `GET /permissions`. **Keys remain inactive until 05+07 are amended together.**
-- [ ] Approve explicit key-by-key grants for Business Owner, Administrator, Salesperson, and Accountant (Cashier list is already in Document 07).
-- [ ] Approve template lifecycle and who may edit tenant role copies.
-- [ ] Resolve platform permission catalogue and API contracts, or keep `platform.*` inactive (current wave).
-- [ ] Resolve lifecycle/provisioning, finance/payables, and dashboard/alert scope—or explicitly defer each.
-- [ ] Close Phase 10 addendum: `post_sale` accounts, 00 vs 05 payment timing, missing Idempotency-Key HTTP contract.
-- [ ] Authorize a specific set of document edits.
-- [ ] Review the amended documents for consistency.
-- [ ] Separately authorize implementation, if and when ready.
+**Resolved** means an owner decision is recorded in §10. **Deferred** means choice (b) postponed it. A deferred item is not approved. **Unresolved** means no owner decision is recorded.
+
+- [x] **Resolved — recorded; frozen-document edit deferred under choice (b).** Eight-template catalogue and Sales Manager disposition (Salesperson replaces Sales Manager; nine-name alternative not selected). Not applied to Documents 00 or 07.
+- [x] **Resolved — recorded; application deferred under choice (b).** Five default tenant-owned copies and no-silent-overwrite rule. Not applied to Documents 00 or 07.
+- [x] **Resolved — recorded; activation deferred under choice (b).** Owner POS off, platform vs tenant Administrator, `roles.view`, and deferred `GET /permissions`. Proposed keys stay inactive until Documents 05 and 07 are amended together.
+- [ ] **Deferred under choice (b).** Explicit key-by-key grants for Business Owner, Administrator, Salesperson, and Accountant. When identity work is authorized, use the frozen Document 07 matrix, including the Cashier list already in Document 07.
+- [ ] **Unresolved.** Template lifecycle and who may edit tenant role copies.
+- [ ] **Deferred — proposed keys stay inactive.** Platform permission catalogue and platform API contracts are not approved. `platform.*` stays inactive.
+- [ ] **Unresolved.** Lifecycle/provisioning, finance/payables, and dashboard/alert scope.
+- [ ] **Unresolved.** Phase 10 addendum: `post_sale` accounts, Document 00 vs 05 payment timing, and the missing `Idempotency-Key` HTTP contract. See §9.4.
+- [x] **Resolved for one edit.** Document 05 amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). No other frozen-document edit is authorized.
+- [ ] **Unresolved.** Consistency review of amended documents. This checklist does not sign off Phase 1.
+- [x] **Resolved for foundation corrections only.** Identity implementation, role seeds, and role-grant changes are not authorized (§10).
 
 ## 9. Recorded Gate 1 resolutions (2026-10-12)
 
-Pending explicit approval and authorization to **amend** architecture documents. Frozen Documents 00–08 remain the live contract. Implementation is not authorized.
+Recorded proposals, not applied to Documents 00 or 07. Document 05 has one approved amendment, `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). Documents 00–04 and 06–08 remain frozen. Foundation corrections are the only authorized implementation. Identity implementation is not authorized.
 
 Proposal detail: `docs/architecture/proposals/2026-10-12-gate-1-amendment-set.md`.
 
