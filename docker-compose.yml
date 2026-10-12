@@ -1,0 +1,36 @@
+# Local PostgreSQL and API. Redis, Celery, and the frontend are not started:
+# this phase has no cache, worker, or UI.
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ameen
+      POSTGRES_PASSWORD: ameen
+      POSTGRES_DB: ameen_retail
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ameen -d ameen_retail"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+    volumes:
+      - ameen_pg:/var/lib/postgresql/data
+
+  backend:
+    build: ./backend
+    environment:
+      DJANGO_SETTINGS_MODULE: config.settings.development
+      SECRET_KEY: dev-only-not-for-production
+      DEBUG: "true"
+      ALLOWED_HOSTS: localhost,127.0.0.1,backend
+      DATABASE_URL: postgres://ameen:ameen@postgres:5432/ameen_retail
+      CORS_ALLOWED_ORIGINS: http://localhost:5173
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+
+volumes:
+  ameen_pg:

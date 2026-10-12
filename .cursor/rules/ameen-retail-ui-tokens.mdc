@@ -1,0 +1,16 @@
+---
+description: Apply Ameen Retail visual tokens (teal seed, Inter, 12px radius) on frontend UI work.
+globs: frontend/**/*.{css,scss,tsx,ts,html}
+alwaysApply: false
+---
+
+# Ameen Retail UI tokens
+
+Visual source of truth: `docs/architecture/08-ui-design-tokens.md` and `docs/architecture/tokens.css`.
+
+- Seed / primary: `#147D78`. Use CSS variables (`--color-primary`, …), not ad-hoc hex.
+- Fonts: Inter for headline, body, and label. No second display font.
+- Default corner radius: 12px (`--radius-md`). Pills only for avatars, switches, badges.
+- Light theme is the product default. Dark tokens exist; do not restyle POS as dark-only.
+- Tabular numerals for money and quantities.
+- Do not copy colors or radii from the old ERP.

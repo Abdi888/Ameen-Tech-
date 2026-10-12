@@ -1,0 +1,61 @@
+[project]
+name = "ameen-retail"
+version = "0.1.0"
+description = "Ameen Retail API foundation"
+requires-python = ">=3.12"
+dependencies = [
+    "Django>=5.2,<5.3",
+    "djangorestframework>=3.16,<4",
+    "django-cors-headers>=4.6,<5",
+    "psycopg[binary]>=3.2,<4",
+]
+
+[project.optional-dependencies]
+dev = [
+    "django-stubs>=5.2",
+    "djangorestframework-stubs>=3.16",
+    "mypy>=1.15",
+    "pytest>=8.3",
+    "pytest-django>=4.11",
+    "PyYAML>=6.0",
+    "ruff>=0.11",
+]
+
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["config*", "shared*"]
+exclude = ["tests*"]
+
+[tool.pytest.ini_options]
+DJANGO_SETTINGS_MODULE = "config.settings.test"
+pythonpath = ["."]
+testpaths = ["tests"]
+addopts = "-ra --strict-markers"
+
+[tool.ruff]
+line-length = 100
+target-version = "py312"
+src = ["."]
+
+[tool.ruff.lint.isort]
+known-first-party = ["config", "shared"]
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+
+[tool.ruff.lint.per-file-ignores]
+"config/settings/*.py" = ["E402", "F403", "F405"]
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+files = ["shared", "config/env.py", "config/urls.py", "config/asgi.py", "config/wsgi.py", "tests"]
+exclude = ["config/settings/"]
+plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+
+[tool.django-stubs]
+django_settings_module = "config.settings.test"

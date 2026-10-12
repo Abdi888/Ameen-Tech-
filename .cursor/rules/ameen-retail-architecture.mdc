@@ -1,0 +1,40 @@
+---
+description: Follow Ameen Retail v1 architecture pack and frozen decisions when implementing or changing the system.
+alwaysApply: true
+---
+
+# Ameen Retail architecture
+
+This project is Ameen Retail: a **retail-only**, **multi-tenant**, **modular monolith** (Django + DRF + React). Do not turn it into a generic ERP or microservices.
+
+## Source of truth
+
+1. `docs/architecture/00-frozen-decisions.md` — **wins** if other docs conflict
+2. `docs/architecture/01-system-requirements-and-domain.md`
+3. `docs/architecture/02-database-schema.md`
+4. `docs/architecture/03-technical-architecture.md`
+5. `docs/architecture/04-application-module-design.md`
+6. `docs/architecture/05-api-contract.md`
+7. `docs/architecture/06-security-and-authorization.md`
+8. `docs/architecture/07-permission-matrix-and-screens.md` — permission keys, roles, screen entry
+9. `docs/architecture/08-ui-design-tokens.md` — seed `#147D78`, Inter, 12px radius
+
+Read frozen decisions and the relevant numbered doc **before** adding modules, tables, endpoints, or UI. Use document 07 codes (`products.view`, `pos.create_sale`, …), not `if role == "cashier"`. Visual UI must use document 08 tokens (`docs/architecture/tokens.css`), not a new palette or font.
+
+Index: `docs/architecture/README.md` and `AGENTS.md`.
+
+## Enforcement
+
+- Layers: HTTP/API → application use case → domain → infrastructure. Thin views. No business rules in React or serializers alone.
+- No cross-domain ORM/SQL writes. Inventory, payments, and accounting change only through their public application contracts.
+- Every tenant-owned row has `tenant_id`. Queries are tenant-scoped. `X-Tenant-Id` is a hint; membership must be proven. Bodies must not set `tenant_id`.
+- Product ≠ inventory. Sale ≠ payment. PO ≠ goods receipt. POS ≠ a second sales ledger. Cart ≠ completed sale.
+- Complete sale is **one transaction**: validate, lock stock, complete sale, payments, movements, balanced journals, audit. Rollback on failure. Celery only after commit.
+- Money: Decimal / NUMERIC(19,4), JSON decimal strings. Timestamps UTC. Human document numbers separate from UUIDs.
+- No DELETE of completed sales, payments, journals, or movements. Use void, return, reverse, adjust.
+- Authorize with `resource.action` permissions on the server (registry in doc 07). Deny by default. Owner is a protected role. Tenants assign system roles only; no role-designer UI. View permission is the screen boundary; APIs still enforce.
+- Web auth: server session + HttpOnly Secure cookies + CSRF. No tokens in localStorage.
+- Online POS only. Weighted average cost. No store credit/AR in POS unless frozen decisions are updated.
+- Do not add Wholesale, Travel, HR, manufacturing, Kafka, K8s, or empty future verticals.
+
+If a requirement is missing from these docs, ask — do not invent a new bounded context.
