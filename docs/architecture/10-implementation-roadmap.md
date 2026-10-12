@@ -224,7 +224,9 @@ Permissions cited below are **Document 07 canonical keys** unless marked **propo
 
 **Exit gate.** Written approval of (a) amendment set **or** (b) “implement frozen 07 as-is and defer U-01–U-06.”
 
-**Blocks this phase.** Unwillingness to choose (a) or (b). Catalogue nine-vs-eight left implicit.
+**Recorded 2026-10-12.** The owner chose (b). When identity implementation is authorized, use the frozen Document 07 permission matrix as-is. U-01–U-06 stay deferred. Proposed permission keys stay inactive. This record does not authorize identity implementation, role seeds, or role-grant changes.
+
+**Blocks this phase.** Unwillingness to choose (a) or (b). Catalogue nine-vs-eight left implicit. Choice (b) is now recorded; identity implementation remains separately unauthorized.
 
 ---
 

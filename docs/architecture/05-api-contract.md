@@ -49,18 +49,25 @@ Filters: status, category_id, brand_id, supplier_id, customer_id, branch_id, dat
 
 ## HTTP status
 
-200/201/202 · 400 invalid · 401 auth · 403 permission · **404** missing or cross-tenant IDOR · 409 conflict · 422 validation · 429 rate limit · 500/503.
+200/201/202 · 400 invalid · 401 auth · 403 permission · **404** missing or cross-tenant IDOR · **405** method not allowed · 409 conflict · 422 validation · 429 rate limit · 500/503.
 
 ## Error codes
 
 AUTH_REQUIRED, AUTH_INVALID_TOKEN, AUTH_TOKEN_EXPIRED  
 PERMISSION_DENIED, TENANT_ACCESS_DENIED  
 VALIDATION_ERROR, INVALID_FIELD, INVALID_FORMAT, INVALID_VALUE  
+METHOD_NOT_ALLOWED  
 RESOURCE_NOT_FOUND, RESOURCE_ALREADY_EXISTS, RESOURCE_CONFLICT  
 INSUFFICIENT_STOCK, INVALID_STATUS_TRANSITION, SALE_ALREADY_COMPLETED, SALE_ALREADY_VOIDED, PAYMENT_EXCEEDS_BALANCE, PRODUCT_SKU_EXISTS, REGISTER_NOT_OPEN, ACCOUNTING_ENTRY_UNBALANCED  
 INTERNAL_ERROR, SERVICE_UNAVAILABLE  
 
 Do not leak required permission names to ordinary clients.
+
+### Amendment 2026-10-12 — method not allowed
+
+An unsupported HTTP method stays **405**. The code is `METHOD_NOT_ALLOWED`. The body is the error envelope above, with `field` null. `INVALID_VALUE` stays a validation code at **422** and is not used for 405.
+
+Rationale: this contract previously listed no 405 status and no method-not-allowed code. The foundation mapped that case to `INVALID_VALUE`, which this document groups with validation. The handler and the code catalogue then disagreed. This amendment adds one status and one code. No other status or code changes.
 
 ---
 

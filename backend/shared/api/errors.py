@@ -45,9 +45,7 @@ def exception_handler(exc: Exception, context: dict[str, Any]) -> Response:
     if isinstance(exc, (Http404, NotFound)):
         return _respond(context, 404, "RESOURCE_NOT_FOUND", "Not found.")
     if isinstance(exc, MethodNotAllowed):
-        # Document 05 has no method-not-allowed code. INVALID_VALUE is the
-        # closest request-value code and keeps the real HTTP status of 405.
-        return _respond(context, 405, "INVALID_VALUE", "This method is not allowed.")
+        return _respond(context, 405, "METHOD_NOT_ALLOWED", "This method is not allowed.")
     if isinstance(exc, ParseError):
         return _respond(context, 400, "INVALID_FORMAT", "Request body is not valid JSON.")
     if isinstance(exc, ValidationError):

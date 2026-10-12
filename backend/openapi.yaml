@@ -103,6 +103,7 @@ components:
         - INVALID_FIELD
         - INVALID_FORMAT
         - INVALID_VALUE
+        - METHOD_NOT_ALLOWED
         - RESOURCE_NOT_FOUND
         - RESOURCE_ALREADY_EXISTS
         - RESOURCE_CONFLICT

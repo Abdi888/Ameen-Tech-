@@ -43,7 +43,7 @@ Purchasing/receiving is the next slice unless the user says otherwise.
 
 ## Running the Phase 1 foundation
 
-The API foundation lives in `backend/`. It serves `GET /api/v1/health`, the Document 05 JSON envelope, and the tenant-isolation rules that do not require login. Login, roles, the React app, Redis, and Celery are not part of this phase. Documents 00–08 are unchanged.
+The API foundation lives in `backend/`. It serves `GET /api/v1/health`, the Document 05 JSON envelope, and the tenant-isolation rules that do not require login. Login, roles, the React app, Redis, and Celery are not part of this phase. Document 05 has one approved amendment, `METHOD_NOT_ALLOWED` at HTTP 405. Documents 00–04 and 06–08 are unchanged.
 
 From the repository root, with Python 3.12 and Docker:
 

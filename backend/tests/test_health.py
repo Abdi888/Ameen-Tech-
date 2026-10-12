@@ -65,6 +65,26 @@ def test_debug_mode_500_hides_the_exception(settings: Any) -> None:
     assert response.json()["errors"][0]["code"] == "INTERNAL_ERROR"
 
 
+def test_post_health_is_method_not_allowed() -> None:
+    response = APIClient().post("/api/v1/health", data={}, format="json")
+    assert response.status_code == 405
+    assert response["Content-Type"].startswith("application/json")
+    body = response.json()
+    assert body == {
+        "success": False,
+        "data": None,
+        "meta": {},
+        "errors": [
+            {
+                "code": "METHOD_NOT_ALLOWED",
+                "message": "This method is not allowed.",
+                "field": None,
+            }
+        ],
+    }
+    assert "INVALID_VALUE" not in response.content.decode()
+
+
 def test_trailing_slash_is_not_rewritten() -> None:
     response = APIClient().get("/api/v1/health/")
     assert response.status_code == 404

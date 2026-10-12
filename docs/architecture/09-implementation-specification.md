@@ -257,7 +257,7 @@ Errors:
 - Time: ISO 8601 UTC (`Z`). “Today” in reports = tenant local calendar day (Document 00 §8).
 - Pagination: `page` default 1, `page_size` default 25, **max 100**. Sort whitelist. `search=` server-defined.
 - Headers: `X-Request-Id` (echo or generate), `X-Tenant-Id` (hint), `Idempotency-Key` on confirm/payment/receive/return/refund/transfer complete, `If-Match` on concurrent master edits → 409.
-- Status: 401 unauthenticated; 403 missing permission; **404** cross-tenant IDOR; 409 stock/status; 422 validation; 429 rate limit.
+- Status: 401 unauthenticated; 403 missing permission; **404** cross-tenant IDOR; 405 method not allowed; 409 stock/status; 422 validation; 429 rate limit.
 - OpenAPI 3.x is the machine contract when coding starts. Breaking changes → `/api/v2`.
 - No client `POST /journal-entries` to record a sale.
 - `POST /products` creates product + default variant + optional barcode (facade).
@@ -270,7 +270,7 @@ Errors:
 Three layers (Documents 01, 05, 06): request (types, required, ranges) → domain (state, stock, return qty) → database (FKs).
 
 Machine codes from Document 05 (do not invent replacements):  
-`AUTH_REQUIRED`, `AUTH_INVALID_TOKEN`, `AUTH_TOKEN_EXPIRED`, `PERMISSION_DENIED`, `TENANT_ACCESS_DENIED`, `VALIDATION_ERROR`, `INVALID_FIELD`, `INVALID_FORMAT`, `INVALID_VALUE`, `RESOURCE_NOT_FOUND`, `RESOURCE_ALREADY_EXISTS`, `RESOURCE_CONFLICT`, `INSUFFICIENT_STOCK`, `INVALID_STATUS_TRANSITION`, `SALE_ALREADY_COMPLETED`, `SALE_ALREADY_VOIDED`, `PAYMENT_EXCEEDS_BALANCE`, `PRODUCT_SKU_EXISTS`, `REGISTER_NOT_OPEN`, `ACCOUNTING_ENTRY_UNBALANCED`, `INTERNAL_ERROR`, `SERVICE_UNAVAILABLE`.
+`AUTH_REQUIRED`, `AUTH_INVALID_TOKEN`, `AUTH_TOKEN_EXPIRED`, `PERMISSION_DENIED`, `TENANT_ACCESS_DENIED`, `VALIDATION_ERROR`, `INVALID_FIELD`, `INVALID_FORMAT`, `INVALID_VALUE`, `METHOD_NOT_ALLOWED`, `RESOURCE_NOT_FOUND`, `RESOURCE_ALREADY_EXISTS`, `RESOURCE_CONFLICT`, `INSUFFICIENT_STOCK`, `INVALID_STATUS_TRANSITION`, `SALE_ALREADY_COMPLETED`, `SALE_ALREADY_VOIDED`, `PAYMENT_EXCEEDS_BALANCE`, `PRODUCT_SKU_EXISTS`, `REGISTER_NOT_OPEN`, `ACCOUNTING_ENTRY_UNBALANCED`, `INTERNAL_ERROR`, `SERVICE_UNAVAILABLE`.
 
 Login failures: **“Invalid email or password.”** (Document 06).  
 Do not leak `required permission = …` in 403 bodies (Documents 05, 06).  

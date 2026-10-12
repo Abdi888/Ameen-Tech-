@@ -1,11 +1,12 @@
 """API error codes from Document 05 and the HTTP status each one uses.
 
-Document 05 names the codes and the status families (401, 403, 404, 409, 422,
-500, 503). It does not give every code its own status line. The mapping below
-follows those families: auth failures are 401, permission and tenant denial are
-403, a hidden or missing resource is 404, stock and state conflicts are 409,
-validation is 422, a malformed body is 400, an unbalanced journal is a server
-invariant (500), and a down dependency is 503.
+Document 05 names the codes and the status families (401, 403, 404, 405, 409,
+422, 500, 503). It does not give every code its own status line. The mapping
+below follows those families: auth failures are 401, permission and tenant
+denial are 403, a hidden or missing resource is 404, an unsupported method is
+405, stock and state conflicts are 409, validation is 422, a malformed body is
+400, an unbalanced journal is a server invariant (500), and a down dependency
+is 503.
 """
 
 from __future__ import annotations
@@ -20,6 +21,7 @@ STATUS_BY_CODE: dict[str, int] = {
     "INVALID_FIELD": 422,
     "INVALID_FORMAT": 400,
     "INVALID_VALUE": 422,
+    "METHOD_NOT_ALLOWED": 405,
     "RESOURCE_NOT_FOUND": 404,
     "RESOURCE_ALREADY_EXISTS": 409,
     "RESOURCE_CONFLICT": 409,

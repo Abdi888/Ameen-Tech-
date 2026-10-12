@@ -256,7 +256,24 @@ These remain unresolved and must be settled before the relevant contract is fina
 
 | Artifact | Status |
 |---|---|
-| Documents 00–08 | Frozen; unchanged |
-| Document 09 | Unchanged; Appendix B item 6 remains the implementer rule until 05 and 07 are amended together |
-| Gate 1 resolutions | Recorded; pending authorization to amend |
-| Implementation | Not authorized |
+| Documents 00–04 and 06–08 | Frozen; unchanged |
+| Document 05 | One approved amendment, 2026-10-12: `METHOD_NOT_ALLOWED` at HTTP 405. See §10 |
+| Document 09 | Code list updated to include that same code. Appendix B item 6 remains the implementer rule until 05 and 07 are amended together for role listing |
+| Gate 1 resolutions | Recorded; not applied to Documents 00/07 |
+| Implementation | Foundation corrections only. Identity implementation is not authorized |
+
+## 10. Approved foundation decisions (2026-10-12)
+
+The owner approved two corrections. Neither one starts identity implementation.
+
+### 10.1 Permission scope — roadmap choice (b)
+
+When identity implementation is later authorized, implement the frozen Document 07 permission matrix as-is. U-01 through U-06 stay deferred. Proposed permission keys stay inactive. Role grants are not changed. Roles are not seeded.
+
+Rationale: the roadmap exit required an explicit choice between amending the role catalogue and deferring it. The owner chose deferral. Gate 1 selections in §9 remain recorded proposals. They are not edits to Documents 00 or 07.
+
+### 10.2 Document 05 — `METHOD_NOT_ALLOWED`
+
+Unsupported HTTP methods return **405** with code `METHOD_NOT_ALLOWED` and the standard error envelope. `INVALID_VALUE` remains **422** and is not used for this case.
+
+Rationale: Document 05 had no 405 status and no dedicated code, so the handler used `INVALID_VALUE` at 405 while the catalogue mapped that code to 422. The owner approved a narrow Document 05 amendment rather than overloading a validation code. Documents 00–04 and 06–08 were not edited. Document 09’s code list was updated so it still matches Document 05.
