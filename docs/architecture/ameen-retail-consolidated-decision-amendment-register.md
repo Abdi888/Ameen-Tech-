@@ -1,9 +1,9 @@
 # Ameen Retail ERP — Consolidated Decision and Amendment Register
 
 **Status:** Choice (b) recorded 2026-10-12. Gate 1 resolutions remain recorded proposals and are not applied to Documents 00 or 07.  
-**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11).  
+**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11). Roadmap Phase 3 acceptance added 2026-10-13 (§12).  
 **Scope:** Greenfield Ameen Retail ERP architecture amendment  
-**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 is not authorized.  
+**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 accepted in §12. Roadmap Phase 4 is not authorized.  
 **Frozen-document status:** Documents 00–04 and 06–08 remain unchanged and frozen. Document 05 has one approved amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). The password endpoints in §11.2 are not a Document 05 amendment.  
 **Document 09:** Code list includes `METHOD_NOT_ALLOWED`. Appendix B item 6 remains the implementer rule until Documents 05 and 07 are amended together for role listing. `roles.view` stays inactive.
 
@@ -13,7 +13,7 @@
 
 This register consolidates the user's six selections, remaining decisions identified in the Cursor review, proposed document impacts, and approval gates.
 
-This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. It does not authorize roadmap Phase 3.
+This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. Section 12 records the 2026-10-13 acceptance of Roadmap Phase 3. It does not authorize roadmap Phase 4.
 
 The project is greenfield and must not reuse code from the legacy ERP.
 
@@ -187,7 +187,8 @@ Use this checklist at the next review. Partial approval is acceptable; any defer
 - [x] **Resolved for one edit.** Document 05 amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). No other frozen-document edit is authorized.
 - [ ] **Unresolved.** Consistency review of amended documents. This checklist does not sign off Phase 1.
 - [x] **Resolved for foundation corrections only.** As of §10 (2026-10-12), identity implementation was not yet authorized.
-- [x] **Accepted 2026-10-13.** Identity and access implementation (§11). Outstanding contract items in §11.2 are recorded and are not frozen-document edits. Roadmap Phase 3 is not authorized.
+- [x] **Accepted 2026-10-13.** Identity and access implementation (§11). Outstanding contract items in §11.2 are recorded and are not frozen-document edits. At that acceptance, Roadmap Phase 3 was not yet authorized; it is accepted in §12.
+- [x] **Accepted 2026-10-13.** Roadmap Phase 3 (§12). `MoneyField` rejects Python floats; `NUMERIC(19,4)` is unchanged; no new migration. The outbox schema remains unresolved and blocks CompleteSale. Phase 4 is not authorized.
 
 ## 9. Recorded Gate 1 resolutions (2026-10-12)
 
@@ -308,4 +309,44 @@ These are recorded only. They are not silent edits to frozen documents, and they
 
 ### 11.3 Not authorized
 
-Roadmap Phase 3 (persistence, migrations, transaction conventions, and audit primitives beyond what §11 already accepted) is not authorized. No further application code or migrations are authorized by this section.
+§11 did not authorize Roadmap Phase 3. That phase was accepted later in §12. Phase 4 is not authorized by §11 or §12.
+
+## 12. Roadmap Phase 3 acceptance (2026-10-13)
+
+The owner accepted Roadmap Phase 3: persistence, migrations, transaction conventions, and audit primitives. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It does not authorize Roadmap Phase 4 or any later phase.
+
+Documents 00–09 were not edited for this acceptance.
+
+### 12.1 Verification recorded with acceptance
+
+From `backend/`, after the `MoneyField` float rejection was fixed:
+
+| Check | Result |
+|---|---|
+| `ruff check .` | Passed |
+| `ruff format --check .` | Passed (101 files formatted) |
+| `mypy` | Passed (94 source files) |
+| `pytest --tb=line -q` | **77 passed** in 21.35s |
+
+### 12.2 MoneyField
+
+The review blocker is resolved. `MoneyField.to_python` rejects a Python `float` before `DecimalField.to_python` can convert it. `NUMERIC(19,4)` is unchanged. No new migration was required.
+
+### 12.3 Unresolved dependency — outbox
+
+Document 00 and Document 09 require an outbox row in the same commit as CompleteSale. Document 02 does not define that table. The outbox schema remains unresolved and must be approved before CompleteSale is implemented. This section does not invent its columns.
+
+### 12.4 Deferrals preserved
+
+These stay deferred. This acceptance does not implement them.
+
+- `tenant_settings`
+- `documents`
+- `document_sequences`
+- The currencies table and the foreign key from `tenants.default_currency_id` (§11.2)
+- The invite rate-limit threshold (§11.2)
+- The Document 05 password-route amendment (§11.2)
+
+### 12.5 Not authorized
+
+Roadmap Phase 4 and every later phase remain unauthorized. A separate explicit approval is required before implementation proceeds. No further application code or migrations are authorized by this section.

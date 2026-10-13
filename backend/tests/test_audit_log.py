@@ -3,7 +3,7 @@ from __future__ import annotations
 from typing import cast
 
 import pytest
-from django.db import transaction
+from django.db import connection, transaction
 from django.db.utils import ProgrammingError
 
 from modules.audit.models import AuditLog
@@ -39,5 +39,9 @@ def test_audit_rows_cannot_be_updated_or_deleted(api: SessionClient) -> None:
     with pytest.raises(ProgrammingError, match="append-only"):
         with transaction.atomic():
             AuditLog.objects.filter(pk=row.id).update(action="tampered")
+    with pytest.raises(ProgrammingError, match="append-only"):
+        with transaction.atomic():
+            with connection.cursor() as cursor:
+                cursor.execute("DELETE FROM audit.audit_logs WHERE id = %s", [row.id])
     row.refresh_from_db()
     assert row.action == "login.success"
