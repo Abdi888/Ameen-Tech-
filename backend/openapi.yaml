@@ -3,9 +3,10 @@ info:
   title: Ameen Retail API
   version: 0.1.0
   description: >
-    Phase 1 foundation only. Business resources from Document 05 are not
-    implemented yet. The health path is operational; the pack requires health
-    checks and does not name a URL.
+    Identity and access foundation. Health, cookie sessions, tenant membership,
+    and Document 07 permission checks are implemented. Catalog, inventory,
+    sales, and POS are not. The health path is operational; the pack requires
+    health checks and does not name a URL.
 servers:
   - url: http://localhost:8000
 paths:
@@ -28,6 +29,92 @@ paths:
             application/json:
               schema:
                 $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/auth/login:
+    post:
+      operationId: login
+      summary: Create an HttpOnly session cookie
+      parameters:
+        - $ref: "#/components/parameters/RequestId"
+        - $ref: "#/components/parameters/TenantHint"
+      responses:
+        "200":
+          description: Session cookie set. The token is not in the body.
+        "401":
+          description: Unknown email or wrong password
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "403":
+          description: CSRF failure or tenant membership denied
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+        "429":
+          description: Temporary login lock
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/auth/logout:
+    post:
+      operationId: logout
+      summary: Revoke the current session
+      responses:
+        "200":
+          description: Session revoked
+        "401":
+          description: Authentication required or session invalid
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/auth/me:
+    get:
+      operationId: currentUser
+      summary: Current user, memberships, tenant, roles, and permissions
+      parameters:
+        - $ref: "#/components/parameters/TenantHint"
+      responses:
+        "200":
+          description: Authenticated profile
+        "401":
+          description: Authentication required, invalid, or expired
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/ErrorEnvelope"
+  /api/v1/users:
+    get:
+      operationId: listUsers
+      summary: List members of the current tenant
+      responses:
+        "200":
+          description: Tenant members
+        "401":
+          description: Authentication required
+        "403":
+          description: Permission denied or tenant membership denied
+    post:
+      operationId: inviteUser
+      summary: Invite a member. The response does not contain a password.
+      responses:
+        "201":
+          description: Membership created
+        "403":
+          description: Permission denied or protected role
+        "409":
+          description: Already a member
+  /api/v1/roles:
+    get:
+      operationId: listRoles
+      summary: List the eight system roles for a caller who can view users.
+      responses:
+        "200":
+          description: System roles
+        "403":
+          description: Permission denied
 components:
   parameters:
     RequestId:
@@ -41,7 +128,7 @@ components:
       name: X-Tenant-Id
       in: header
       required: false
-      description: Hint only. It does not select a tenant.
+      description: Hint only. The server accepts it after an active membership is proven.
       schema:
         type: string
         format: uuid

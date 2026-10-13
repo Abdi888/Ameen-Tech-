@@ -38,14 +38,39 @@ def tenant_hint_from_header(value: str | None) -> str | None:
     return None
 
 
-def authorized_tenant_id(*, user_id: str | None, tenant_hint: str | None) -> str | None:
-    """Return a tenant id only after an active membership is proven.
+def authorized_tenant_id(
+    *,
+    user_id: str | None,
+    tenant_hint: str | None,
+    proven_tenant_id: str | None = None,
+) -> str | None:
+    """Return a tenant id only when the caller has already proven membership.
 
-    Login and membership are not part of this foundation. The arguments are
-    accepted so callers have one function to change later. They are not proof.
+    `X-Tenant-Id` and a user id are not proof. `proven_tenant_id` is set only
+    by the membership check.
     """
-    del user_id, tenant_hint
+    del tenant_hint
+    if user_id and proven_tenant_id:
+        return proven_tenant_id
     return None
+
+
+def bind_actor(request: HttpRequest, *, user_id: str, proven_tenant_id: str | None) -> None:
+    """Attach the authenticated user and a proven tenant to the request log context."""
+    current = read_context(request)
+    remember_context(
+        request,
+        RequestContext(
+            request_id=current.request_id if current else request_id_from_header(None),
+            user_id=user_id,
+            tenant_id=authorized_tenant_id(
+                user_id=user_id,
+                tenant_hint=current.tenant_hint if current else None,
+                proven_tenant_id=proven_tenant_id,
+            ),
+            tenant_hint=current.tenant_hint if current else None,
+        ),
+    )
 
 
 def remember_context(request: HttpRequest, context: RequestContext) -> None:

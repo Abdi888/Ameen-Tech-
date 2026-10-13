@@ -5,6 +5,7 @@ description = "Ameen Retail API foundation"
 requires-python = ">=3.12"
 dependencies = [
     "Django>=5.2,<5.3",
+    "argon2-cffi>=23.1,<26",
     "djangorestframework>=3.16,<4",
     "django-cors-headers>=4.6,<5",
     "psycopg[binary]>=3.2,<4",
@@ -27,7 +28,7 @@ build-backend = "setuptools.build_meta"
 
 [tool.setuptools.packages.find]
 where = ["."]
-include = ["config*", "shared*"]
+include = ["config*", "shared*", "modules*"]
 exclude = ["tests*"]
 
 [tool.pytest.ini_options]
@@ -42,20 +43,22 @@ target-version = "py312"
 src = ["."]
 
 [tool.ruff.lint.isort]
-known-first-party = ["config", "shared"]
+known-first-party = ["config", "shared", "modules"]
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "UP", "B"]
 
 [tool.ruff.lint.per-file-ignores]
 "config/settings/*.py" = ["E402", "F403", "F405"]
+"**/migrations/*.py" = ["E501", "I001"]
 
 [tool.mypy]
 python_version = "3.12"
 strict = true
-files = ["shared", "config/env.py", "config/urls.py", "config/asgi.py", "config/wsgi.py", "tests"]
+files = ["shared", "modules", "config/env.py", "config/urls.py", "config/asgi.py", "config/wsgi.py", "tests"]
 exclude = ["config/settings/"]
 plugins = ["mypy_django_plugin.main", "mypy_drf_plugin.main"]
+explicit_package_bases = true
 
 [tool.django-stubs]
 django_settings_module = "config.settings.test"

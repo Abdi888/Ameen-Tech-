@@ -7,6 +7,7 @@ import logging
 from collections.abc import Callable
 
 from django.http import HttpRequest, HttpResponse
+from django.middleware.csrf import get_token
 
 from shared.api.context import (
     RequestContext,
@@ -104,6 +105,21 @@ class RequestLogMiddleware:
             },
         )
         return response
+
+
+class EnsureCsrfCookieMiddleware:
+    """Set the CSRF cookie on API responses so cookie POSTs can send it back.
+
+    This sits inside CsrfViewMiddleware so that middleware writes the cookie.
+    """
+
+    def __init__(self, get_response: Callable[[HttpRequest], HttpResponse]) -> None:
+        self.get_response = get_response
+
+    def __call__(self, request: HttpRequest) -> HttpResponse:
+        if request.path.startswith("/api/"):
+            get_token(request)
+        return self.get_response(request)
 
 
 class RejectTenantIdMiddleware:

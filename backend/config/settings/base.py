@@ -21,6 +21,10 @@ INSTALLED_APPS = [
     "corsheaders",
     "rest_framework",
     "shared.database",
+    "modules.tenants",
+    "modules.identity",
+    "modules.access",
+    "modules.audit",
 ]
 
 # Outermost first. Request context is outside everything so error responses
@@ -35,6 +39,7 @@ MIDDLEWARE = [
     "django.middleware.common.CommonMiddleware",
     "shared.api.middleware.RejectTenantIdMiddleware",
     "django.middleware.csrf.CsrfViewMiddleware",
+    "shared.api.middleware.EnsureCsrfCookieMiddleware",
 ]
 
 ROOT_URLCONF = "config.urls"
@@ -51,12 +56,24 @@ USE_TZ = True
 APPEND_SLASH = False
 
 # Cookie flags for the session cookie Document 06 requires. The CSRF cookie
-# stays readable by the future browser client so it can send the CSRF header.
+# stays readable by the browser client so it can send the CSRF header.
 # The session cookie itself is HttpOnly and is never a localStorage token.
+SESSION_COOKIE_NAME = "ameen_session"
 SESSION_COOKIE_HTTPONLY = True
 SESSION_COOKIE_SAMESITE = "Lax"
+SESSION_COOKIE_PATH = "/"
 CSRF_COOKIE_HTTPONLY = False
 CSRF_COOKIE_SAMESITE = "Lax"
+# Document 06 starting values. Production sets Secure on the cookie.
+SESSION_IDLE_SECONDS = 8 * 60 * 60
+SESSION_ABSOLUTE_SECONDS = 30 * 24 * 60 * 60
+# Document 06 asks for length rather than composition rules and does not set a number.
+PASSWORD_MIN_LENGTH = 12
+PASSWORD_MAX_LENGTH = 128
+PASSWORD_RESET_TTL_SECONDS = 60 * 60
+LOGIN_MAX_FAILURES = 5
+LOGIN_FAILURE_WINDOW_SECONDS = 15 * 60
+LOGIN_PROGRESSIVE_DELAY_SECONDS = 0.25
 CSRF_FAILURE_VIEW = "shared.api.errors.csrf_failure"
 
 CORS_ALLOWED_ORIGINS = cors_origins()
@@ -66,14 +83,13 @@ SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"
 X_FRAME_OPTIONS = "DENY"
 
-# Fail closed. Health opts out. CookieSessionAuthentication authenticates
-# nobody until the session table and login use case exist.
+# Fail closed. Health and login opt out. Protected views declare a Document 07 key.
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [
-        "shared.api.authentication.CookieSessionAuthentication",
+        "modules.identity.api.authentication.CookieSessionAuthentication",
     ],
     "DEFAULT_PERMISSION_CLASSES": [
-        "rest_framework.permissions.IsAuthenticated",
+        "modules.access.api.permissions.DenyByDefault",
     ],
     "DEFAULT_RENDERER_CLASSES": [
         "rest_framework.renderers.JSONRenderer",

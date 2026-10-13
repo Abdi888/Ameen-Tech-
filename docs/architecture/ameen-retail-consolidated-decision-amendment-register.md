@@ -1,10 +1,10 @@
 # Ameen Retail ERP — Consolidated Decision and Amendment Register
 
 **Status:** Choice (b) recorded 2026-10-12. Gate 1 resolutions remain recorded proposals and are not applied to Documents 00 or 07.  
-**Date:** 2026-10-12  
+**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11).  
 **Scope:** Greenfield Ameen Retail ERP architecture amendment  
-**Implementation status:** Foundation corrections only. Identity implementation is not authorized.  
-**Frozen-document status:** Documents 00–04 and 06–08 remain unchanged and frozen. Document 05 has one approved amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2).  
+**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 is not authorized.  
+**Frozen-document status:** Documents 00–04 and 06–08 remain unchanged and frozen. Document 05 has one approved amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). The password endpoints in §11.2 are not a Document 05 amendment.  
 **Document 09:** Code list includes `METHOD_NOT_ALLOWED`. Appendix B item 6 remains the implementer rule until Documents 05 and 07 are amended together for role listing. `roles.view` stays inactive.
 
 **Source of recorded Gate 1 text:** user record 2026-10-12; proposal `docs/architecture/proposals/2026-10-12-gate-1-amendment-set.md`. Those resolutions do not supersede Documents 00–04, 06–08, or Document 07. Choice (b) defers U-01–U-06 (§10.1). The Document 05 amendment in §10.2 is a separate approved correction.
@@ -13,7 +13,7 @@
 
 This register consolidates the user's six selections, remaining decisions identified in the Cursor review, proposed document impacts, and approval gates.
 
-This is a review artifact. It does not amend Documents 00–04 or 06–08. The owner decisions it records are roadmap choice (b) and the Document 05 amendment in §10. The only implementation authorization recorded here is the foundation correction in §10. Identity implementation is not authorized.
+This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. It does not authorize roadmap Phase 3.
 
 The project is greenfield and must not reuse code from the legacy ERP.
 
@@ -186,7 +186,8 @@ Use this checklist at the next review. Partial approval is acceptable; any defer
 - [ ] **Unresolved.** Phase 10 addendum: `post_sale` accounts, Document 00 vs 05 payment timing, and the missing `Idempotency-Key` HTTP contract. See §9.4.
 - [x] **Resolved for one edit.** Document 05 amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). No other frozen-document edit is authorized.
 - [ ] **Unresolved.** Consistency review of amended documents. This checklist does not sign off Phase 1.
-- [x] **Resolved for foundation corrections only.** Identity implementation, role seeds, and role-grant changes are not authorized (§10).
+- [x] **Resolved for foundation corrections only.** As of §10 (2026-10-12), identity implementation was not yet authorized.
+- [x] **Accepted 2026-10-13.** Identity and access implementation (§11). Outstanding contract items in §11.2 are recorded and are not frozen-document edits. Roadmap Phase 3 is not authorized.
 
 ## 9. Recorded Gate 1 resolutions (2026-10-12)
 
@@ -279,3 +280,32 @@ Rationale: the roadmap exit required an explicit choice between amending the rol
 Unsupported HTTP methods return **405** with code `METHOD_NOT_ALLOWED` and the standard error envelope. `INVALID_VALUE` remains **422** and is not used for this case.
 
 Rationale: Document 05 had no 405 status and no dedicated code, so the handler used `INVALID_VALUE` at 405 while the catalogue mapped that code to 422. The owner approved a narrow Document 05 amendment rather than overloading a validation code. Documents 00–04 and 06–08 were not edited. Document 09’s code list was updated so it still matches Document 05.
+
+## 11. Identity and access acceptance (2026-10-13)
+
+The owner accepted the identity and access implementation. In the owner’s phase label this work was “Phase 2.” The implementation roadmap still calls repository setup Phase 2 and authentication Phase 4. This section does not renumber or edit that roadmap.
+
+Documents 00–08 were not edited for this acceptance.
+
+### 11.1 Verification recorded with acceptance
+
+From `backend/`, after the CSRF, token, and concurrency checks:
+
+| Check | Result |
+|---|---|
+| `ruff check .` | Passed |
+| `ruff format --check .` | Passed (96 files already formatted) |
+| `mypy` | Passed (89 source files) |
+| `pytest --tb=line -q` | **71 passed** in 23.42s |
+
+### 11.2 Outstanding items
+
+These are recorded only. They are not silent edits to frozen documents, and they are not authorization to implement them.
+
+1. **Document 05 password routes.** `POST /api/v1/auth/password/change`, `/auth/password/reset`, and `/auth/password/reset/confirm` are not in Document 05. They need an approved amendment through the same path as §10.2 before they are frozen contract routes. Until then they are the HTTP shape of the Document 06 change, reset, and invite-set-password use cases.
+2. **Currency foreign key.** Document 02 declares `tenants.default_currency_id` as a foreign key to `currencies`. The currencies table is not implemented. The column stays a nullable UUID with no foreign key until that table exists.
+3. **Invite rate limit.** Document 06 requires rate limiting for invite. No threshold is frozen. The limit stays unimplemented until an explicit number is chosen.
+
+### 11.3 Not authorized
+
+Roadmap Phase 3 (persistence, migrations, transaction conventions, and audit primitives beyond what §11 already accepted) is not authorized. No further application code or migrations are authorized by this section.

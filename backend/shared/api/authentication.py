@@ -1,12 +1,9 @@
-"""Web authentication foundation.
+"""CSRF enforcement for cookie-authenticated API views.
 
 Document 00 §10 and Document 06: the browser uses an HttpOnly session cookie.
-Bearer tokens and localStorage are not a web strategy. Sessions are not stored
-yet, so this class authenticates nobody and protected routes fail closed.
-
-DRF marks API views as CSRF-exempt and checks CSRF inside session
-authentication. This class does that check on unsafe methods. The Django
-reason is not returned to the client.
+DRF marks API views as CSRF-exempt and checks CSRF inside authentication.
+The Django reason is not returned to the client. Session loading lives in the
+identity module; this class only rejects a missing CSRF token.
 """
 
 from __future__ import annotations
@@ -30,12 +27,14 @@ def _unused_response(_request: HttpRequest) -> HttpResponse:
     return HttpResponse()
 
 
-class CookieSessionAuthentication(BaseAuthentication):
+class CsrfAuthentication(BaseAuthentication):
+    """Require a CSRF token on unsafe methods and leave the request anonymous."""
+
     def authenticate(self, request: Request) -> tuple[Any, Any] | None:
-        self._enforce_csrf(request)
+        self.enforce_csrf(request)
         return None
 
-    def _enforce_csrf(self, request: Request) -> None:
+    def enforce_csrf(self, request: Request) -> None:
         check = _CsrfReason(_unused_response)
         check.process_request(request._request)
         reason = check.process_view(request._request, _unused_response, (), {})

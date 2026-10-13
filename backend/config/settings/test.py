@@ -21,3 +21,6 @@ os.environ.setdefault("CORS_ALLOWED_ORIGINS", "http://localhost:5173")
 assert_local_database(urlparse(os.environ["DATABASE_URL"]).hostname or "")
 
 from .base import *  # noqa: E402,F403
+
+# Keep the suite fast. Production still delays repeated login failures.
+LOGIN_PROGRESSIVE_DELAY_SECONDS = 0

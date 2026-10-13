@@ -7,6 +7,7 @@ ENV PYTHONUNBUFFERED=1
 COPY pyproject.toml ./
 COPY config ./config
 COPY shared ./shared
+COPY modules ./modules
 COPY manage.py ./
 RUN pip install --no-cache-dir .
 
