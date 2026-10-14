@@ -1,9 +1,9 @@
 # Ameen Retail ERP — Consolidated Decision and Amendment Register
 
 **Status:** Choice (b) recorded 2026-10-12. Gate 1 resolutions remain recorded proposals and are not applied to Documents 00 or 07.  
-**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11). Roadmap Phase 3 acceptance added 2026-10-13 (§12).  
+**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11). Roadmap Phase 3 acceptance added 2026-10-13 (§12). Tax configuration decision recorded 2026-10-14 (§13). Accounting-engine review record added 2026-10-14 (§14). Roadmap Phase 4 acceptance added 2026-10-14 (§15).  
 **Scope:** Greenfield Ameen Retail ERP architecture amendment  
-**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 accepted in §12. Roadmap Phase 4 is not authorized.  
+**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 accepted in §12. Roadmap Phase 4 is accepted in §15. Phase 5 is not authorized. §13 and the approved parts of §14 are for decision review only and do not authorize implementation. §15 does not accept §13, §14, or the accounting proposal.  
 **Frozen-document status:** Documents 00–04 and 06–08 remain unchanged and frozen. Document 05 has one approved amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). The password endpoints in §11.2 are not a Document 05 amendment.  
 **Document 09:** Code list includes `METHOD_NOT_ALLOWED`. Appendix B item 6 remains the implementer rule until Documents 05 and 07 are amended together for role listing. `roles.view` stays inactive.
 
@@ -13,7 +13,7 @@
 
 This register consolidates the user's six selections, remaining decisions identified in the Cursor review, proposed document impacts, and approval gates.
 
-This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. Section 12 records the 2026-10-13 acceptance of Roadmap Phase 3. It does not authorize roadmap Phase 4.
+This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. Section 12 records the 2026-10-13 acceptance of Roadmap Phase 3. Section 13 records the 2026-10-14 tax-configuration decision for review. Section 14 records the 2026-10-14 accounting-engine review. Neither §13 nor §14 authorizes implementation. Section 15 records the 2026-10-14 acceptance of Roadmap Phase 4. It does not authorize Phase 5.
 
 The project is greenfield and must not reuse code from the legacy ERP.
 
@@ -83,6 +83,8 @@ Gate 1 catalogue and boundary resolutions are recorded in §9. The following sti
 | D-16 | Stale permission examples | Reconcile examples such as `ownership.transfer` and `security.settings.update` against the canonical registry; either approve and add them coherently or remove them from examples. |
 | D-17 | Operational health | Define what platform dashboard “health” means, which checks are in scope, and what data may be exposed to which platform roles. |
 | D-18 | Amendment scope | Decide whether to include the proposed `2026-10-10-revised-amendment-set.md` changes. Review each proposal individually; do not adopt the file wholesale by implication. |
+| D-19 | Default tax-rate effective date | **Unresolved.** Decide whether a changed tenant default tax rate takes effect immediately or from a specified future date. No rule is approved. See §13.7. |
+| D-20 | Opening Balance Equity clearing | **Unresolved.** How and when Opening Balance Equity is cleared or reconciled is not decided. The opening-stock journal in §14.2 does not decide it. |
 
 ## 5. Proposed amendment sequence
 
@@ -188,7 +190,14 @@ Use this checklist at the next review. Partial approval is acceptable; any defer
 - [ ] **Unresolved.** Consistency review of amended documents. This checklist does not sign off Phase 1.
 - [x] **Resolved for foundation corrections only.** As of §10 (2026-10-12), identity implementation was not yet authorized.
 - [x] **Accepted 2026-10-13.** Identity and access implementation (§11). Outstanding contract items in §11.2 are recorded and are not frozen-document edits. At that acceptance, Roadmap Phase 3 was not yet authorized; it is accepted in §12.
-- [x] **Accepted 2026-10-13.** Roadmap Phase 3 (§12). `MoneyField` rejects Python floats; `NUMERIC(19,4)` is unchanged; no new migration. The outbox schema remains unresolved and blocks CompleteSale. Phase 4 is not authorized.
+- [x] **Accepted 2026-10-13.** Roadmap Phase 3 (§12). `MoneyField` rejects Python floats; `NUMERIC(19,4)` is unchanged; no new migration. The outbox schema remains unresolved and blocks CompleteSale. At that acceptance, Roadmap Phase 4 was not yet authorized; it is accepted in §15.
+- [x] **Accepted 2026-10-14.** Roadmap Phase 4 (§15), with branch selection, Phase 7 frontend routes, and `REQUIRE_APPROVAL` left deferred. Phase 5 is not authorized. §13, §14, and the accounting proposal are not part of this acceptance.
+- [x] **Approved for decision review only.** Tenant default tax rate, tax-inclusive calculation, sale snapshot, and historical-rate protection (§13). Not an implementation authorization. Documents 00–08 are unchanged.
+- [ ] **Unresolved.** Effective date of a changed default tax rate: immediate or a specified future date (D-19, §13.7).
+- [x] **Approved for decision review only.** Opening stock debits Inventory Asset and credits Opening Balance Equity (§14.2). Not an implementation authorization.
+- [ ] **Unresolved.** Minimal first-sale chart of accounts and tender-account map. Not verified as an owner-approved list (§14.1, §9.4).
+- [ ] **Unresolved.** Clearing and reconciliation of Opening Balance Equity (D-20, §14.3).
+- [ ] **Unresolved.** Which tax rule a discount must follow. §14.4 records the requirement and does not select a discount base (§13.3).
 
 ## 9. Recorded Gate 1 resolutions (2026-10-12)
 
@@ -309,11 +318,11 @@ These are recorded only. They are not silent edits to frozen documents, and they
 
 ### 11.3 Not authorized
 
-§11 did not authorize Roadmap Phase 3. That phase was accepted later in §12. Phase 4 is not authorized by §11 or §12.
+§11 did not authorize Roadmap Phase 3. That phase was accepted later in §12. §11 and §12 did not authorize Roadmap Phase 4. That phase was accepted later in §15. §15 does not authorize Phase 5.
 
 ## 12. Roadmap Phase 3 acceptance (2026-10-13)
 
-The owner accepted Roadmap Phase 3: persistence, migrations, transaction conventions, and audit primitives. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It does not authorize Roadmap Phase 4 or any later phase.
+The owner accepted Roadmap Phase 3: persistence, migrations, transaction conventions, and audit primitives. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It did not authorize Roadmap Phase 4. That phase was accepted later in §15. This section does not authorize Phase 5 or any later phase.
 
 Documents 00–09 were not edited for this acceptance.
 
@@ -349,4 +358,127 @@ These stay deferred. This acceptance does not implement them.
 
 ### 12.5 Not authorized
 
-Roadmap Phase 4 and every later phase remain unauthorized. A separate explicit approval is required before implementation proceeds. No further application code or migrations are authorized by this section.
+§12 did not authorize Roadmap Phase 4. That phase was accepted later in §15. Phase 5 and every later phase remain unauthorized. No further application code or migrations are authorized by this section.
+
+## 13. Tax configuration decision (2026-10-14)
+
+**Status:** Approved for decision review. This is not implementation authorization.
+
+The owner approved the rules in §13.1 through §13.6 for review. This section does not authorize application code, tests, schema changes, migrations, API routes, permission changes, or edits to Documents 00–08, Document 09, or the roadmap. Those documents stay as they are. This section does not withdraw their existing tax sketches.
+
+### 13.1 Authorized roles
+
+Business Owner and an authorized Administrator may configure the tenant's default tax rate. Existing permission checks still apply. This decision does not add permission keys and does not change Document 07 grants.
+
+### 13.2 Configuration model
+
+One configurable default tax rate per tenant.
+
+Multiple tax rates and product-specific tax categories are not part of this decision. Their absence here is a scope limit of §13. It is not an approved change to Documents 00–08.
+
+### 13.3 Tax calculation
+
+The previously approved tax-inclusive calculation is preserved:
+
+- Tax amount = gross price × tax rate / (100 + tax rate).
+- Taxable base = gross price − tax amount.
+
+This register had no earlier section that stated the formula. §13.3 is the record of that preserved calculation. It does not define how the rate is stored, and it does not define a discount interaction.
+
+### 13.4 Sale snapshot
+
+The finalized sale snapshot preserves the gross price, taxable base, tax rate, tax amount, and pricing mode. The accounting engine must use this snapshot. It must not recalculate tax, and it must not post tax twice.
+
+### 13.5 Historical transactions
+
+Changing the default rate must not alter or recalculate completed sales or their accounting records.
+
+### 13.6 Auditability
+
+A rate change must be attributable to the authorized user, and the time of the change must be recorded. This is a requirement for future design. It does not authorize implementation of audit storage or an audit screen.
+
+### 13.7 Unresolved — effective date
+
+**Open decision D-19.** Whether a changed default tax rate takes effect immediately or from a specified future date is not decided. Neither behavior is an approved rule.
+
+### 13.8 Not authorized
+
+§13 does not authorize implementation. Roadmap Phase 4 and every later phase remain unauthorized. No tax configuration behavior is approved to be built from this section alone.
+
+## 14. Accounting-engine review record (2026-10-14)
+
+**Status:** Mixed. Approved items are for decision review only. This section does not authorize implementation.
+
+This section records only decisions that can be verified. It does not adopt the unapproved role table in `docs/architecture/proposals/2026-10-14-accounting-design-and-controls.md`. Documents 00–08, Document 09, and the roadmap are unchanged.
+
+### 14.1 Minimal chart and tender accounts — not verified
+
+The owner asked to record an approved minimal chart of accounts and the tender-account treatment for the first sale.
+
+No owner-approved account list or tender-to-account map is in this register or in an approved decision record. Register §9.4 still requires the exact accounts used by `accounting.post_sale`. The accounting proposal's role table, including card, mobile-money, and bank clearing names, is marked there as not approved. The later review recommended one asset account per tender and also marked that recommendation as not approved.
+
+§14 does not convert either source into an approved chart. §9.4 stays unresolved.
+
+Document 00 §6 already lists the v1 tenders and states that cash change is not revenue. That is existing frozen text. It is not a new chart decision.
+
+### 14.2 Opening stock — approved for decision review
+
+**Approved for decision review. Not implementation authorization.**
+
+Opening stock is recorded as:
+
+| Account | Debit | Credit |
+|---|---|---|
+| Inventory Asset | opening stock value | |
+| Opening Balance Equity | | opening stock value |
+
+This entry does not approve account codes, a full chart, adjustment journals, or a catch-up posting procedure.
+
+### 14.3 Unresolved — Opening Balance Equity
+
+**Open decision D-20.** Clearing and reconciliation of Opening Balance Equity are not decided. No method, date, or destination account is approved.
+
+### 14.4 Tax-inclusive sale snapshot
+
+The tax-inclusive calculation, the finalized sale snapshot, and the rule against calculating or posting tax twice are already approved for decision review in §13.3 and §13.4. §14 does not restate them as a second decision.
+
+The owner also requires that discounts follow the applicable tax rules, and that the accounting engine use the finalized snapshot without recalculating tax. The snapshot rule is §13.4.
+
+**Unresolved.** This register does not state which discount-tax rule is the applicable one. §13.3 does not define a discount interaction. Contra-revenue, net revenue, and whether the gross price in the §13.3 formula is before or after discount are not approved here.
+
+## 15. Roadmap Phase 4 acceptance (2026-10-14)
+
+The owner accepted Roadmap Phase 4: authentication, tenant context, the platform/tenant boundary, and authorization. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It does not authorize Roadmap Phase 5 or any later phase.
+
+Documents 00–09 were not edited for this acceptance.
+
+The accepted baseline is the identity and access implementation in §11, the persistence implementation in §12, and the limited request-context permission change accepted on 2026-10-14. After one membership is proven, the request context stores the permission codes computed on the server for that membership. Client headers, query parameters, and request bodies do not supply those codes.
+
+### 15.1 Verification recorded with acceptance
+
+The request-context review accepted that change. The implementation run reported before that review, and not repeated for this acceptance, was:
+
+| Check | Result |
+|---|---|
+| `ruff check .` | Passed |
+| `mypy` | Passed (95 source files) |
+| `makemigrations --check --dry-run` | No changes detected |
+| `migrate --noinput` | Existing migrations applied; no new migration |
+| `pytest tests/test_request_context.py` | **4 passed** |
+| `pytest --tb=line -q` | **81 passed** in 23.10s |
+
+### 15.2 Deferrals preserved
+
+These stay deferred. This acceptance does not implement them.
+
+- Current branch selection. `branch_id` stays unset. No branch header, stored default branch, or branch, warehouse, or terminal models.
+- Frontend routes `/login`, `/app/*`, and `/platform/*`, including platform API stubs. Deferred to Phase 7. No `platform.*` keys.
+- `REQUIRE_APPROVAL`. Authorization stays `ALLOW` or `DENY` until refund and discount thresholds are approved.
+- The Document 05 password-route amendment (§11.2).
+- The invite rate-limit threshold (§11.2).
+- U-01 through U-06, including Salesperson, Owner POS off, and tenant role-template copies (choice (b), §10.1).
+- The deferrals already listed in §12.4, including the unresolved outbox schema. The outbox schema still blocks CompleteSale.
+
+### 15.3 Not authorized
+
+Phase 5 and every later phase remain unauthorized. A separate explicit approval is required before that work starts. This acceptance does not include §13, §14, or `docs/architecture/proposals/2026-10-14-accounting-design-and-controls.md`.

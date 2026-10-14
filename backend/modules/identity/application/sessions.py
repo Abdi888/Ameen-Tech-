@@ -11,6 +11,7 @@ from django.db import transaction
 from django.http import HttpRequest
 from django.utils import timezone
 
+from modules.access.application.authorization import granted_permission_codes
 from modules.access.application.queries import profile_for, resolve_access
 from modules.audit.application import record_audit
 from modules.identity.application.accounts import normalize_email
@@ -219,10 +220,16 @@ def authenticate_session(request: HttpRequest) -> tuple[Actor, str] | None:
     session.last_used_at = now
     session.tenant_id = tenant_id
     session.save(update_fields=["last_used_at", "tenant"])
+    permissions: frozenset[str] = frozenset()
+    if membership_id is not None:
+        permissions = frozenset(
+            granted_permission_codes(membership_id=membership_id, branch_id=None)
+        )
     bind_actor(
         request,
         user_id=str(session.user_id),
         proven_tenant_id=str(tenant_id) if tenant_id else None,
+        permissions=permissions,
     )
     return (
         Actor(id=session.user_id, tenant_id=tenant_id, membership_id=membership_id),

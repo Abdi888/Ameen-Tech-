@@ -2,7 +2,9 @@
 
 `X-Tenant-Id` is stored as a hint. `authorized_tenant_id` is the only value
 later code may treat as the tenant, and it stays empty until membership is
-proven. Document 00 §9: request bodies must not include `tenant_id`.
+proven. Permission codes are attached only after that proof, and only from
+the server-side grant for the membership. Document 00 §9: request bodies
+must not include `tenant_id`.
 """
 
 from __future__ import annotations
@@ -23,6 +25,7 @@ class RequestContext:
     user_id: str | None = None
     tenant_id: str | None = None
     tenant_hint: str | None = None
+    permissions: frozenset[str] = frozenset()
 
 
 def request_id_from_header(value: str | None) -> str:
@@ -55,8 +58,18 @@ def authorized_tenant_id(
     return None
 
 
-def bind_actor(request: HttpRequest, *, user_id: str, proven_tenant_id: str | None) -> None:
-    """Attach the authenticated user and a proven tenant to the request log context."""
+def bind_actor(
+    request: HttpRequest,
+    *,
+    user_id: str,
+    proven_tenant_id: str | None,
+    permissions: frozenset[str] | None = None,
+) -> None:
+    """Attach the authenticated user, proven tenant, and server-side permissions.
+
+    `permissions` is the grant set the caller already computed for a proven
+    membership. This function does not read headers, query parameters, or bodies.
+    """
     current = read_context(request)
     remember_context(
         request,
@@ -69,6 +82,7 @@ def bind_actor(request: HttpRequest, *, user_id: str, proven_tenant_id: str | No
                 proven_tenant_id=proven_tenant_id,
             ),
             tenant_hint=current.tenant_hint if current else None,
+            permissions=frozenset(permissions or ()),
         ),
     )
 
