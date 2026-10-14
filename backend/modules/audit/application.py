@@ -10,6 +10,10 @@ from modules.audit.models import AuditLog
 _HIDDEN = ("password", "token", "secret", "pan")
 
 
+def has_recorded_action(action: str) -> bool:
+    return AuditLog.objects.filter(action=action).exists()
+
+
 def record_audit(
     *,
     action: str,

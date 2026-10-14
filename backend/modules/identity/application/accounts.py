@@ -31,6 +31,51 @@ def normalize_email(email: str) -> str:
     return email.strip().lower()
 
 
+class AccountRejected(Exception):
+    """A credentialed account could not be created. Not an HTTP response."""
+
+    def __init__(self, message: str) -> None:
+        super().__init__(message)
+        self.message = message
+
+
+def create_credentialed_user(
+    *,
+    email: str,
+    password: str,
+    first_name: str,
+    last_name: str,
+    phone: str = "",
+) -> User:
+    """Create an ACTIVE user with an Argon2id password.
+
+    Employee invites stay on ``prepare_invited_user`` and do not set a password.
+    Tenant HTTP never accepts a password for another person. This function is
+    the operator path for the initial platform administrator and Owner.
+    """
+    normalized = normalize_email(email)
+    problem = password_rejection(
+        password,
+        minimum=settings.PASSWORD_MIN_LENGTH,
+        maximum=settings.PASSWORD_MAX_LENGTH,
+    )
+    if problem:
+        raise AccountRejected(problem)
+    if not first_name.strip() or not last_name.strip():
+        raise AccountRejected("First and last name are required.")
+    if User.objects.filter(email=normalized).exists():
+        raise AccountRejected("A user with this email already exists.")
+    return User.objects.create(
+        email=normalized,
+        phone=phone,
+        password_hash=hash_password(password),
+        first_name=first_name.strip(),
+        last_name=last_name.strip(),
+        status="ACTIVE",
+        email_verified_at=timezone.now(),
+    )
+
+
 def prepare_invited_user(
     *,
     email: str,

@@ -71,3 +71,7 @@ pytest
 ```
 
 `docker compose up --build` also starts the API container against the Postgres service. The database password in `.env.example` and `docker-compose.yml` is a local placeholder. Do not use it outside a local machine. Tests refuse a non-local `DATABASE_URL`.
+
+## Operator bootstrap
+
+The one-time initial tenant command is documented in [../operations/bootstrap.md](../operations/bootstrap.md). That file is an operator procedure. It is not a frozen architecture document and it is not a public API.

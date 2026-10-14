@@ -1,9 +1,9 @@
 # Ameen Retail ERP — Consolidated Decision and Amendment Register
 
 **Status:** Choice (b) recorded 2026-10-12. Gate 1 resolutions remain recorded proposals and are not applied to Documents 00 or 07.  
-**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11). Roadmap Phase 3 acceptance added 2026-10-13 (§12). Tax configuration decision recorded 2026-10-14 (§13). Accounting-engine review record added 2026-10-14 (§14). Roadmap Phase 4 acceptance added 2026-10-14 (§15).  
+**Date:** 2026-10-12. Identity and access acceptance added 2026-10-13 (§11). Roadmap Phase 3 acceptance added 2026-10-13 (§12). Tax configuration decision recorded 2026-10-14 (§13). Accounting-engine review record added 2026-10-14 (§14). Roadmap Phase 4 acceptance added 2026-10-14 (§15). Roadmap Phase 5 bootstrap-scope acceptance added 2026-10-14 (§16).  
 **Scope:** Greenfield Ameen Retail ERP architecture amendment  
-**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 accepted in §12. Roadmap Phase 4 is accepted in §15. Phase 5 is not authorized. §13 and the approved parts of §14 are for decision review only and do not authorize implementation. §15 does not accept §13, §14, or the accounting proposal.  
+**Implementation status:** Foundation corrections in §10. Identity and access accepted in §11. Roadmap Phase 3 accepted in §12. Roadmap Phase 4 is accepted in §15. Roadmap Phase 5 is accepted in §16 for the bootstrap scope only. Provisioning and Phase 6 are not authorized. §13 and the approved parts of §14 are for decision review only and do not authorize implementation. §15 and §16 do not accept §13, §14, or the accounting proposal.  
 **Frozen-document status:** Documents 00–04 and 06–08 remain unchanged and frozen. Document 05 has one approved amendment: `METHOD_NOT_ALLOWED` at HTTP 405 (§10.2). The password endpoints in §11.2 are not a Document 05 amendment.  
 **Document 09:** Code list includes `METHOD_NOT_ALLOWED`. Appendix B item 6 remains the implementer rule until Documents 05 and 07 are amended together for role listing. `roles.view` stays inactive.
 
@@ -13,7 +13,7 @@
 
 This register consolidates the user's six selections, remaining decisions identified in the Cursor review, proposed document impacts, and approval gates.
 
-This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. Section 12 records the 2026-10-13 acceptance of Roadmap Phase 3. Section 13 records the 2026-10-14 tax-configuration decision for review. Section 14 records the 2026-10-14 accounting-engine review. Neither §13 nor §14 authorizes implementation. Section 15 records the 2026-10-14 acceptance of Roadmap Phase 4. It does not authorize Phase 5.
+This is a review artifact. It does not amend Documents 00–04 or 06–08. Sections 9 and 10 are the 2026-10-12 record. Section 11 records the 2026-10-13 acceptance of the identity and access implementation. Section 12 records the 2026-10-13 acceptance of Roadmap Phase 3. Section 13 records the 2026-10-14 tax-configuration decision for review. Section 14 records the 2026-10-14 accounting-engine review. Neither §13 nor §14 authorizes implementation. Section 15 records the 2026-10-14 acceptance of Roadmap Phase 4. It did not authorize Phase 5. Section 16 records the 2026-10-14 acceptance of Roadmap Phase 5 for the bootstrap scope only. It does not authorize provisioning or Phase 6.
 
 The project is greenfield and must not reuse code from the legacy ERP.
 
@@ -191,7 +191,8 @@ Use this checklist at the next review. Partial approval is acceptable; any defer
 - [x] **Resolved for foundation corrections only.** As of §10 (2026-10-12), identity implementation was not yet authorized.
 - [x] **Accepted 2026-10-13.** Identity and access implementation (§11). Outstanding contract items in §11.2 are recorded and are not frozen-document edits. At that acceptance, Roadmap Phase 3 was not yet authorized; it is accepted in §12.
 - [x] **Accepted 2026-10-13.** Roadmap Phase 3 (§12). `MoneyField` rejects Python floats; `NUMERIC(19,4)` is unchanged; no new migration. The outbox schema remains unresolved and blocks CompleteSale. At that acceptance, Roadmap Phase 4 was not yet authorized; it is accepted in §15.
-- [x] **Accepted 2026-10-14.** Roadmap Phase 4 (§15), with branch selection, Phase 7 frontend routes, and `REQUIRE_APPROVAL` left deferred. Phase 5 is not authorized. §13, §14, and the accounting proposal are not part of this acceptance.
+- [x] **Accepted 2026-10-14.** Roadmap Phase 4 (§15), with branch selection, Phase 7 frontend routes, and `REQUIRE_APPROVAL` left deferred. At that acceptance, Phase 5 was not yet authorized; the bootstrap scope is accepted in §16. §13, §14, and the accounting proposal are not part of this acceptance.
+- [x] **Accepted 2026-10-14 — bootstrap scope only.** Roadmap Phase 5 (§16). Provisioning APIs, platform HTTP routes, template copies, additional lifecycle states, and unapproved platform permissions are excluded. Phase 6 is not authorized. §13, §14, and the accounting proposal are not part of this acceptance.
 - [x] **Approved for decision review only.** Tenant default tax rate, tax-inclusive calculation, sale snapshot, and historical-rate protection (§13). Not an implementation authorization. Documents 00–08 are unchanged.
 - [ ] **Unresolved.** Effective date of a changed default tax rate: immediate or a specified future date (D-19, §13.7).
 - [x] **Approved for decision review only.** Opening stock debits Inventory Asset and credits Opening Balance Equity (§14.2). Not an implementation authorization.
@@ -318,11 +319,11 @@ These are recorded only. They are not silent edits to frozen documents, and they
 
 ### 11.3 Not authorized
 
-§11 did not authorize Roadmap Phase 3. That phase was accepted later in §12. §11 and §12 did not authorize Roadmap Phase 4. That phase was accepted later in §15. §15 does not authorize Phase 5.
+§11 did not authorize Roadmap Phase 3. That phase was accepted later in §12. §11 and §12 did not authorize Roadmap Phase 4. That phase was accepted later in §15. §15 did not authorize Phase 5. The bootstrap scope was accepted later in §16. §16 does not authorize provisioning or Phase 6.
 
 ## 12. Roadmap Phase 3 acceptance (2026-10-13)
 
-The owner accepted Roadmap Phase 3: persistence, migrations, transaction conventions, and audit primitives. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It did not authorize Roadmap Phase 4. That phase was accepted later in §15. This section does not authorize Phase 5 or any later phase.
+The owner accepted Roadmap Phase 3: persistence, migrations, transaction conventions, and audit primitives. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It did not authorize Roadmap Phase 4. That phase was accepted later in §15. This section did not authorize Phase 5. The bootstrap scope was accepted later in §16. This section does not authorize provisioning or Phase 6.
 
 Documents 00–09 were not edited for this acceptance.
 
@@ -358,7 +359,7 @@ These stay deferred. This acceptance does not implement them.
 
 ### 12.5 Not authorized
 
-§12 did not authorize Roadmap Phase 4. That phase was accepted later in §15. Phase 5 and every later phase remain unauthorized. No further application code or migrations are authorized by this section.
+§12 did not authorize Roadmap Phase 4. That phase was accepted later in §15. §12 did not authorize Phase 5. The bootstrap scope was accepted later in §16. Provisioning and Phase 6 remain unauthorized. No further application code or migrations are authorized by this section.
 
 ## 13. Tax configuration decision (2026-10-14)
 
@@ -448,7 +449,7 @@ The owner also requires that discounts follow the applicable tax rules, and that
 
 ## 15. Roadmap Phase 4 acceptance (2026-10-14)
 
-The owner accepted Roadmap Phase 4: authentication, tenant context, the platform/tenant boundary, and authorization. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It does not authorize Roadmap Phase 5 or any later phase.
+The owner accepted Roadmap Phase 4: authentication, tenant context, the platform/tenant boundary, and authorization. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. It did not authorize Roadmap Phase 5. The bootstrap scope was accepted later in §16. It does not authorize provisioning or Phase 6.
 
 Documents 00–09 were not edited for this acceptance.
 
@@ -481,4 +482,52 @@ These stay deferred. This acceptance does not implement them.
 
 ### 15.3 Not authorized
 
-Phase 5 and every later phase remain unauthorized. A separate explicit approval is required before that work starts. This acceptance does not include §13, §14, or `docs/architecture/proposals/2026-10-14-accounting-design-and-controls.md`.
+§15 did not authorize Phase 5. The bootstrap scope was accepted later in §16. Provisioning and Phase 6 remain unauthorized. This acceptance does not include §13, §14, or `docs/architecture/proposals/2026-10-14-accounting-design-and-controls.md`.
+
+## 16. Roadmap Phase 5 acceptance (2026-10-14)
+
+**Status:** ACCEPTED — BOOTSTRAP SCOPE ONLY.
+
+The owner accepted Roadmap Phase 5 for the implemented operator bootstrap only. This section does not renumber or edit `docs/architecture/10-implementation-roadmap.md`. Acceptance of this scope is not authorization of provisioning, platform HTTP, or any later phase.
+
+Documents 00–09 were not edited for this acceptance.
+
+The accepted behavior is the one-time management command `bootstrap_initial_tenant`. It creates an initial platform administrator with no tenant membership, one `ACTIVE` retail tenant, and a separate Owner on the seeded system role Business Owner. A second run refuses and writes nothing. The operator procedure and production policy are in `docs/operations/bootstrap.md`. That procedure is not a public API.
+
+### 16.1 Verification recorded with acceptance
+
+The final review found no blocking defect. It did not rerun the checks. The implementation run reported before that review was:
+
+| Check | Result |
+|---|---|
+| `ruff check .` | Passed |
+| `ruff format --check .` | Passed (110 files already formatted) |
+| `mypy` | Passed (103 source files) |
+| `makemigrations --check --dry-run` | No changes detected |
+| `migrate --noinput` | Existing migrations applied; no new migration |
+| `pytest --tb=short -q` | **86 passed** in 18.83s |
+
+The review also recorded three coverage gaps that were not treated as blockers: no two-connection test of the advisory lock, no forced failure after the first insert, and no decoy audit action before bootstrap.
+
+### 16.2 Excluded from this acceptance
+
+These are not accepted and are not authorized by §16.
+
+- Provisioning APIs, provision-run records, and retry of a provision job.
+- Platform HTTP routes, including `/platform/*` and any bootstrap or tenant-creation endpoint.
+- Tenant-owned role-template copies and silent template sync.
+- Lifecycle states other than Document 02 `ACTIVE`, `SUSPENDED`, and `ARCHIVED`.
+- Unapproved platform permissions, including any `platform.*` key.
+
+### 16.3 Deferrals preserved
+
+These stay deferred. This acceptance does not implement them.
+
+- Current branch selection. `branch_id` stays unset. No branch header, stored default branch, or branch, warehouse, or terminal models.
+- Frontend routes `/login`, `/app/*`, and `/platform/*`.
+- `REQUIRE_APPROVAL`. Authorization stays `ALLOW` or `DENY`.
+- The deferrals already listed in §15.2.
+
+### 16.4 Not authorized
+
+Phase 6 and every later phase remain unauthorized. A separate explicit approval is required before that work starts. This acceptance does not include §13, §14, or `docs/architecture/proposals/2026-10-14-accounting-design-and-controls.md`.
