@@ -9,7 +9,14 @@ from __future__ import annotations
 
 from pathlib import Path
 
-from config.env import cors_origins, env_bool, env_list, postgresql_from_url, require_env
+from config.env import (
+    cors_origins,
+    csrf_trusted_origins,
+    env_bool,
+    env_list,
+    postgresql_from_url,
+    require_env,
+)
 
 BASE_DIR = Path(__file__).resolve().parents[2]
 
@@ -78,6 +85,11 @@ CSRF_FAILURE_VIEW = "shared.api.errors.csrf_failure"
 
 CORS_ALLOWED_ORIGINS = cors_origins()
 CORS_ALLOW_CREDENTIALS = True
+# Cookie POSTs from the Vite SPA (different origin in local development) need
+# an explicit CSRF trusted origin. Defaults to the CORS allowlist when
+# CSRF_TRUSTED_ORIGINS is unset; set that env var to a narrower list in
+# production if CORS must stay wider than CSRF. Never use *.
+CSRF_TRUSTED_ORIGINS = csrf_trusted_origins(CORS_ALLOWED_ORIGINS)
 
 SECURE_CONTENT_TYPE_NOSNIFF = True
 SECURE_REFERRER_POLICY = "same-origin"

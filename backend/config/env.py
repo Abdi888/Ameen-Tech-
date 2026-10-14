@@ -63,6 +63,23 @@ def cors_origins(name: str = "CORS_ALLOWED_ORIGINS") -> list[str]:
     return origins
 
 
+def csrf_trusted_origins(cors: list[str], name: str = "CSRF_TRUSTED_ORIGINS") -> list[str]:
+    """Origins Django may accept on cookie-authenticated unsafe requests.
+
+    CORS and CSRF are separate controls. When CSRF_TRUSTED_ORIGINS is unset,
+    reuse the CORS allowlist so the SPA origin that may call the API with
+    credentials is also trusted for Origin checks. An explicit CSRF list must
+    stay a concrete allowlist; wildcards are rejected.
+    """
+    raw = os.environ.get(name)
+    if raw is None or raw.strip() == "":
+        return list(cors)
+    origins = [item.strip() for item in raw.split(",") if item.strip()]
+    if "*" in origins:
+        raise ImproperlyConfigured("CSRF_TRUSTED_ORIGINS cannot contain *.")
+    return origins
+
+
 def postgresql_from_url(database_url: str) -> dict[str, object]:
     parsed = urlparse(database_url)
     if parsed.scheme not in {"postgres", "postgresql"}:

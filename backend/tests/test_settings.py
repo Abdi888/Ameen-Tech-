@@ -12,6 +12,7 @@ from config.env import (
     assert_local_database,
     assert_production_settings,
     cors_origins,
+    csrf_trusted_origins,
     postgresql_from_url,
 )
 
@@ -44,6 +45,29 @@ def test_cors_allowlist_rejects_wildcard(monkeypatch: pytest.MonkeyPatch) -> Non
         cors_origins()
 
 
+def test_csrf_trusted_origins_default_to_cors_copy(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.delenv("CSRF_TRUSTED_ORIGINS", raising=False)
+    cors = ["http://localhost:5173", "https://app.example.com"]
+    trusted = csrf_trusted_origins(cors)
+    assert trusted == cors
+    trusted.append("https://evil.example")
+    assert cors == ["http://localhost:5173", "https://app.example.com"]
+
+
+def test_csrf_trusted_origins_can_be_narrower_than_cors(
+    monkeypatch: pytest.MonkeyPatch,
+) -> None:
+    monkeypatch.setenv("CSRF_TRUSTED_ORIGINS", "https://app.example.com")
+    trusted = csrf_trusted_origins(["https://app.example.com", "https://docs.example.com"])
+    assert trusted == ["https://app.example.com"]
+
+
+def test_csrf_trusted_origins_reject_wildcard(monkeypatch: pytest.MonkeyPatch) -> None:
+    monkeypatch.setenv("CSRF_TRUSTED_ORIGINS", "*")
+    with pytest.raises(ImproperlyConfigured):
+        csrf_trusted_origins(["https://app.example.com"])
+
+
 def test_production_guard_rejects_debug_placeholder_secret_and_wildcard_hosts() -> None:
     with pytest.raises(ImproperlyConfigured):
         assert_production_settings(
@@ -70,6 +94,9 @@ def test_loaded_test_settings_are_closed() -> None:
     assert settings.DEBUG is False
     assert settings.DATABASES["default"]["HOST"] in {"localhost", "127.0.0.1", "::1", "postgres"}
     assert "*" not in settings.CORS_ALLOWED_ORIGINS
+    assert settings.CORS_ALLOWED_ORIGINS == ["http://localhost:5173"]
+    assert settings.CSRF_TRUSTED_ORIGINS == ["http://localhost:5173"]
+    assert settings.CSRF_TRUSTED_ORIGINS == settings.CORS_ALLOWED_ORIGINS
     assert "django.contrib.auth" not in settings.INSTALLED_APPS
     assert settings.SESSION_COOKIE_HTTPONLY is True
     assert settings.SESSION_COOKIE_SAMESITE == "Lax"
